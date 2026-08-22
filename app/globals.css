@@ -1,26 +1,269 @@
 @import "tailwindcss";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/manrope";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+/* ==========================================================================
+   RECURR AI — DESIGN TOKENS
+   Single source of truth for color, type, radius and elevation.
+   Every component should consume these tokens rather than raw hex values.
+   ========================================================================== */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ---- Brand: Parrot Green (primary) ------------------------------------ */
+  --parrot-50: #f1f9ea;
+  --parrot-100: #ddf1c9;
+  --parrot-200: #b9e295;
+  --parrot-300: #8fcd5e;
+  --parrot-400: #67b834;
+  --parrot-500: #4a9e1f;
+  --parrot-600: #398217; /* primary base */
+  --parrot-700: #2d6813;
+  --parrot-800: #265214;
+  --parrot-900: #204413;
+  --parrot-950: #0f2607;
+
+  /* ---- Secondary: Blue (analytical accent) ------------------------------ */
+  --blue-50: #eef4fb;
+  --blue-100: #dbe7f5;
+  --blue-200: #b3cdea;
+  --blue-300: #82abd9;
+  --blue-400: #5486c2;
+  --blue-500: #3868a6;
+  --blue-600: #2a5285; /* secondary base */
+  --blue-700: #23426c;
+  --blue-800: #1f375a;
+  --blue-900: #1c2f4c;
+
+  /* ---- Neutrals (warm-tinted, not stark gray) --------------------------- */
+  --neutral-0: #ffffff;
+  --neutral-25: #fbfbf9;
+  --neutral-50: #f7f7f4;
+  --neutral-100: #efefe9;
+  --neutral-150: #e6e6de;
+  --neutral-200: #dcdcd2;
+  --neutral-300: #c4c4b6;
+  --neutral-400: #a3a392;
+  --neutral-500: #83836f;
+  --neutral-600: #666658;
+  --neutral-700: #4c4c42;
+  --neutral-800: #333330;
+  --neutral-900: #1f1f1c;
+  --neutral-950: #131311;
+
+  /* ---- Semantic ---------------------------------------------------------- */
+  --success-50: #eef6ee;
+  --success-500: #3f7d4a;
+  --success-600: #326339;
+
+  --warning-50: #fbf3e6;
+  --warning-500: #b0762b;
+  --warning-600: #8f5f22;
+
+  --error-50: #fbeeee;
+  --error-500: #ab3b34;
+  --error-600: #8c2f29;
+
+  --info-50: var(--blue-50);
+  --info-500: var(--blue-500);
+  --info-600: var(--blue-600);
+
+  /* ---- Surfaces ----------------------------------------------------------- */
+  --surface-page: var(--neutral-25);
+  --surface-card: var(--neutral-0);
+  --surface-elevated: var(--neutral-0);
+  --surface-muted: var(--neutral-50);
+  --surface-sunken: var(--neutral-100);
+  --surface-inverse: var(--neutral-950);
+  --border-default: var(--neutral-150);
+  --border-strong: var(--neutral-300);
+  --divider: var(--neutral-100);
+
+  /* ---- Text --------------------------------------------------------------- */
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-400);
+  --text-disabled: var(--neutral-300);
+  --text-inverse: var(--neutral-0);
+
+  /* ---- Radius --------------------------------------------------------------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ---- Elevation (quiet, single-direction, low-opacity) --------------------- */
+  --shadow-xs: 0 1px 2px 0 rgb(31 31 28 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(31 31 28 / 0.06), 0 1px 2px -1px rgb(31 31 28 / 0.05);
+  --shadow-md: 0 4px 10px -2px rgb(31 31 28 / 0.07), 0 2px 4px -2px rgb(31 31 28 / 0.05);
+  --shadow-lg: 0 12px 24px -6px rgb(31 31 28 / 0.10), 0 4px 8px -4px rgb(31 31 28 / 0.06);
+  --shadow-focus: 0 0 0 3px var(--parrot-200);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: "Space Grotesk Variable", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-primary-50: var(--parrot-50);
+  --color-primary-100: var(--parrot-100);
+  --color-primary-200: var(--parrot-200);
+  --color-primary-300: var(--parrot-300);
+  --color-primary-400: var(--parrot-400);
+  --color-primary-500: var(--parrot-500);
+  --color-primary: var(--parrot-600);
+  --color-primary-hover: var(--parrot-700);
+  --color-primary-active: var(--parrot-800);
+  --color-primary-foreground: var(--neutral-0);
+  --color-primary-900: var(--parrot-900);
+
+  --color-secondary-50: var(--blue-50);
+  --color-secondary-100: var(--blue-100);
+  --color-secondary-200: var(--blue-200);
+  --color-secondary: var(--blue-600);
+  --color-secondary-hover: var(--blue-700);
+  --color-secondary-foreground: var(--neutral-0);
+
+  --color-success-50: var(--success-50);
+  --color-success: var(--success-500);
+  --color-success-strong: var(--success-600);
+  --color-warning-50: var(--warning-50);
+  --color-warning: var(--warning-500);
+  --color-warning-strong: var(--warning-600);
+  --color-error-50: var(--error-50);
+  --color-error: var(--error-500);
+  --color-error-strong: var(--error-600);
+  --color-info-50: var(--info-50);
+  --color-info: var(--info-500);
+
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-inverse: var(--surface-inverse);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-divider: var(--divider);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-neutral-0: var(--neutral-0);
+  --color-neutral-25: var(--neutral-25);
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-150: var(--neutral-150);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  --color-neutral-950: var(--neutral-950);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-scale-in: scale-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.97) translateY(2px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  @keyframes slide-in {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
   }
 }
 
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+* {
+  border-color: var(--border-default);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Tabular, aligned figures for every financial number in the product. */
+.font-numeric {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "zero" 1;
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.01em;
+}
+
+/* Visible, on-brand keyboard focus. Never suppressed. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--parrot-200);
+  color: var(--parrot-900);
+}
+
+/* Custom scrollbar — quiet, not default chrome gray */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-200);
+  border-radius: 999px;
+  border: 2px solid var(--surface-page);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-300);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
