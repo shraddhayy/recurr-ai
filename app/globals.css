@@ -115,16 +115,26 @@
   --color-primary-400: var(--parrot-400);
   --color-primary-500: var(--parrot-500);
   --color-primary: var(--parrot-600);
+  --color-primary-600: var(--parrot-600);
   --color-primary-hover: var(--parrot-700);
+  --color-primary-700: var(--parrot-700);
   --color-primary-active: var(--parrot-800);
+  --color-primary-800: var(--parrot-800);
   --color-primary-foreground: var(--neutral-0);
   --color-primary-900: var(--parrot-900);
 
   --color-secondary-50: var(--blue-50);
   --color-secondary-100: var(--blue-100);
   --color-secondary-200: var(--blue-200);
+  --color-secondary-300: var(--blue-300);
+  --color-secondary-400: var(--blue-400);
+  --color-secondary-500: var(--blue-500);
   --color-secondary: var(--blue-600);
+  --color-secondary-600: var(--blue-600);
   --color-secondary-hover: var(--blue-700);
+  --color-secondary-700: var(--blue-700);
+  --color-secondary-800: var(--blue-800);
+  --color-secondary-900: var(--blue-900);
   --color-secondary-foreground: var(--neutral-0);
 
   --color-success-50: var(--success-50);
@@ -183,6 +193,14 @@
 
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-scale-in: scale-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-float-a: float-a 7s ease-in-out infinite;
+  --animate-float-b: float-b 8.5s ease-in-out infinite;
+  --animate-float-c: float-c 6.5s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+  --animate-ticker: ticker 28s linear infinite;
+  --animate-drift-a: drift-a 22s ease-in-out infinite;
+  --animate-drift-b: drift-b 26s ease-in-out infinite;
+  --animate-drift-c: drift-c 30s ease-in-out infinite;
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -195,6 +213,38 @@
   @keyframes slide-in {
     from { transform: translateX(-100%); }
     to { transform: translateX(0); }
+  }
+  @keyframes float-a {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(4px, -10px) rotate(1.5deg); }
+  }
+  @keyframes float-b {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-6px, -7px) rotate(-1.5deg); }
+  }
+  @keyframes float-c {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(3px, 9px) rotate(1deg); }
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.06); }
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes drift-a {
+    0%, 100% { transform: translate(-4%, -3%) scale(1); }
+    50% { transform: translate(3%, 4%) scale(1.08); }
+  }
+  @keyframes drift-b {
+    0%, 100% { transform: translate(3%, 2%) scale(1.05); }
+    50% { transform: translate(-4%, -4%) scale(1); }
+  }
+  @keyframes drift-c {
+    0%, 100% { transform: translate(0, 4%) scale(1); }
+    50% { transform: translate(-3%, -3%) scale(1.1); }
   }
 }
 
@@ -266,4 +316,15 @@ h1, h2, h3, h4, .font-display {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Marketing page: subtle radial glow used behind the hero stat orb and AI moments */
+.glow-primary {
+  background: radial-gradient(circle, var(--parrot-300) 0%, transparent 70%);
+}
+
+/* Fine film-grain texture, generated inline via SVG turbulence — no image request, GPU-cheap. */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
 }

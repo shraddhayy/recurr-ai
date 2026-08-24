@@ -68,7 +68,7 @@ export function Sidebar() {
         className="sticky top-0 hidden h-screen shrink-0 flex-col bg-neutral-950 lg:flex"
       >
         <div className={cn("flex h-16 items-center px-4", collapsed && "justify-center px-0")}>
-          <RecurrLogo collapsed={collapsed} />
+          <RecurrLogo collapsed={collapsed} theme="dark" />
         </div>
 
         <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">

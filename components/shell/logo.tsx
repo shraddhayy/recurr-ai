@@ -25,13 +25,27 @@ export function RecurrMark({ className }: { className?: string }) {
   );
 }
 
-export function RecurrLogo({ className, collapsed }: { className?: string; collapsed?: boolean }) {
+export function RecurrLogo({
+  className,
+  collapsed,
+  theme = "light",
+}: {
+  className?: string;
+  collapsed?: boolean;
+  /** Which background this sits on — "dark" for the sidebar/dark sections, "light" for the marketing navbar/footer. */
+  theme?: "light" | "dark";
+}) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <RecurrMark className="size-8" />
       {!collapsed && (
-        <span className="font-display text-[16.5px] font-semibold tracking-tight text-white">
-          Recurr <span className="text-primary-300">AI</span>
+        <span
+          className={cn(
+            "font-display text-[16.5px] font-semibold tracking-tight",
+            theme === "dark" ? "text-white" : "text-text-primary"
+          )}
+        >
+          Recurr <span className={theme === "dark" ? "text-primary-300" : "text-primary-600"}>AI</span>
         </span>
       )}
     </div>

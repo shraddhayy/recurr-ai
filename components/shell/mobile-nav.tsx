@@ -26,7 +26,7 @@ export function MobileNav() {
         >
           <DialogPrimitive.Title className="sr-only">Navigation</DialogPrimitive.Title>
           <div className="flex h-16 items-center justify-between px-4">
-            <RecurrLogo />
+            <RecurrLogo theme="dark" />
             <DialogPrimitive.Close
               className="flex size-8 items-center justify-center rounded-md text-neutral-400 hover:bg-white/[0.06] hover:text-white"
               aria-label="Close navigation"
