@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/patterns/empty-state";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { subscriptions } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
+import { BrandChip } from "@/components/shared/brand-chip";
 
 const statusVariant = {
   active: "active",
@@ -124,9 +125,7 @@ export default function SubscriptionsPage() {
                   <div key={sub.id}>
                     <div className="grid grid-cols-1 gap-3 px-5 py-4 transition-colors hover:bg-surface-muted/60 md:grid-cols-[1fr_140px_120px_120px_110px] md:items-center md:gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary-50 font-display text-[13px] font-semibold text-primary-700">
-                          {sub.logoInitial}
-                        </span>
+                        <BrandChip name={sub.name} size={36} className="rounded-md" />
                         <div className="min-w-0">
                           <p className="truncate text-[13.5px] font-medium text-text-primary">{sub.name}</p>
                           <p className="text-[12px] text-text-muted md:hidden">{sub.category}</p>

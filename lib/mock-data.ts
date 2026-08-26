@@ -44,6 +44,7 @@ export interface SavingsOpportunity {
   monthlySavings: number;
   effort: "Low effort" | "Medium effort";
   badge: "Recommended" | "Duplicate" | "Underused";
+  services: string[];
 }
 
 export const savingsOpportunities: SavingsOpportunity[] = [
@@ -54,6 +55,7 @@ export const savingsOpportunities: SavingsOpportunity[] = [
     monthlySavings: 9.2,
     effort: "Low effort",
     badge: "Recommended",
+    services: ["Adobe Creative Cloud"],
   },
   {
     id: "2",
@@ -62,6 +64,7 @@ export const savingsOpportunities: SavingsOpportunity[] = [
     monthlySavings: 6.5,
     effort: "Medium effort",
     badge: "Duplicate",
+    services: ["Netflix", "Disney+"],
   },
   {
     id: "3",
@@ -70,6 +73,7 @@ export const savingsOpportunities: SavingsOpportunity[] = [
     monthlySavings: 12.99,
     effort: "Low effort",
     badge: "Underused",
+    services: ["Peloton App"],
   },
 ];
 
@@ -79,6 +83,7 @@ export interface AiInsight {
   body: string;
   timestamp: string;
   kind: "savings" | "renewal" | "trend" | "alert";
+  services: string[];
 }
 
 export const aiInsights: AiInsight[] = [
@@ -88,6 +93,7 @@ export const aiInsights: AiInsight[] = [
     body: "Mostly driven by AWS usage-based charges. Consider setting a monthly budget alert for Cloud & Dev.",
     timestamp: "2 hours ago",
     kind: "trend",
+    services: ["AWS"],
   },
   {
     id: "2",
@@ -95,6 +101,7 @@ export const aiInsights: AiInsight[] = [
     body: "Netflix, NYT, and Adobe CC all renew between Aug 24–29, totalling $95.48. Flagging so it doesn't surprise you.",
     timestamp: "Yesterday",
     kind: "renewal",
+    services: ["Netflix", "New York Times", "Adobe Creative Cloud"],
   },
   {
     id: "3",
@@ -102,6 +109,7 @@ export const aiInsights: AiInsight[] = [
     body: "Based on your usage pattern, the standard tier covers everything you use. Downgrading saves $46/year.",
     timestamp: "2 days ago",
     kind: "savings",
+    services: ["Notion Plus"],
   },
   {
     id: "4",
@@ -109,5 +117,6 @@ export const aiInsights: AiInsight[] = [
     body: "This month's AWS charge is 34% above your 3-month average. Worth a quick review of active services.",
     timestamp: "3 days ago",
     kind: "alert",
+    services: ["AWS"],
   },
 ];

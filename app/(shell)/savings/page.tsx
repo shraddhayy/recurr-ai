@@ -1,4 +1,4 @@
-import { PiggyBank, ArrowRight, Copy, Timer, TrendingDown } from "lucide-react";
+import { PiggyBank, ArrowRight, TrendingDown } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/page-header";
 import { MetricCard } from "@/components/patterns/metric-card";
@@ -7,12 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { savingsOpportunities } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
-
-const badgeIcon = {
-  Recommended: PiggyBank,
-  Duplicate: Copy,
-  Underused: Timer,
-} as const;
+import { BrandChip, BrandChipStack } from "@/components/shared/brand-chip";
 
 const badgeVariant = {
   Recommended: "recommended",
@@ -55,14 +50,15 @@ export default function SavingsPage() {
 
       <div className="flex flex-col gap-4">
         {savingsOpportunities.map((op) => {
-          const Icon = badgeIcon[op.badge];
           return (
             <Card key={op.id} className="p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-50 text-primary-600">
-                    <Icon className="size-[18px]" strokeWidth={1.75} />
-                  </span>
+                  {op.services.length > 1 ? (
+                    <BrandChipStack names={op.services} size={34} />
+                  ) : (
+                    <BrandChip name={op.services[0]} size={40} className="rounded-md" />
+                  )}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-display text-[15px] font-semibold text-text-primary">

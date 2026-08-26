@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { subscriptions } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
 import { SpendTrendChart } from "@/components/patterns/spend-trend-chart";
+import { BrandChip } from "@/components/shared/brand-chip";
 
 const statusVariant = {
   active: "active",
@@ -122,9 +123,7 @@ export default function OverviewPage() {
             {upcoming.map((sub, i) => (
               <div key={sub.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary-50 font-display text-[14px] font-semibold text-primary-700">
-                    {sub.logoInitial}
-                  </span>
+                  <BrandChip name={sub.name} size={40} className="rounded-md" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13.5px] font-medium text-text-primary">{sub.name}</p>
                     <p className="text-[12px] text-text-muted">{sub.category}</p>

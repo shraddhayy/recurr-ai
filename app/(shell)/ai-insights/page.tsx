@@ -4,12 +4,14 @@ import { PageHeader } from "@/components/patterns/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { aiInsights } from "@/lib/mock-data";
+import { BrandChip, BrandChipStack } from "@/components/shared/brand-chip";
+import { cn } from "@/lib/utils";
 
 const kindConfig = {
-  trend: { icon: TrendingUp, accent: "bg-secondary-50 text-secondary" },
-  renewal: { icon: CalendarClock, accent: "bg-warning-50 text-warning-strong" },
-  savings: { icon: PiggyBank, accent: "bg-primary-50 text-primary-600" },
-  alert: { icon: AlertTriangle, accent: "bg-error-50 text-error-strong" },
+  trend: { icon: TrendingUp, accent: "bg-secondary-50 text-secondary", dot: "bg-secondary-500", label: "Trend" },
+  renewal: { icon: CalendarClock, accent: "bg-warning-50 text-warning-strong", dot: "bg-warning-500", label: "Renewal" },
+  savings: { icon: PiggyBank, accent: "bg-primary-50 text-primary-600", dot: "bg-primary-500", label: "Savings" },
+  alert: { icon: AlertTriangle, accent: "bg-error-50 text-error-strong", dot: "bg-error-500", label: "Alert" },
 } as const;
 
 export default function AiInsightsPage() {
@@ -40,18 +42,42 @@ export default function AiInsightsPage() {
 
       <div className="flex flex-col gap-3">
         {aiInsights.map((insight) => {
-          const { icon: Icon, accent } = kindConfig[insight.kind];
+          const { icon: Icon, accent, dot, label } = kindConfig[insight.kind];
+          const hasServices = insight.services.length > 0;
           return (
             <Card key={insight.id} className="p-5 transition-shadow hover:shadow-sm">
               <div className="flex items-start gap-4">
-                <span className={`flex size-9 shrink-0 items-center justify-center rounded-md ${accent}`}>
-                  <Icon className="size-[17px]" strokeWidth={1.75} />
-                </span>
+                {hasServices ? (
+                  insight.services.length > 1 ? (
+                    <BrandChipStack names={insight.services} size={30} />
+                  ) : (
+                    <span className="relative shrink-0">
+                      <BrandChip name={insight.services[0]} size={36} className="rounded-md" />
+                      <span
+                        className={cn(
+                          "absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full ring-2 ring-surface-card",
+                          dot
+                        )}
+                      />
+                    </span>
+                  )
+                ) : (
+                  <span className={`flex size-9 shrink-0 items-center justify-center rounded-md ${accent}`}>
+                    <Icon className="size-[17px]" strokeWidth={1.75} />
+                  </span>
+                )}
                 <div className="flex flex-1 flex-col gap-1">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h3 className="font-display text-[14.5px] font-semibold text-text-primary">
-                      {insight.title}
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-display text-[14.5px] font-semibold text-text-primary">
+                        {insight.title}
+                      </h3>
+                      {hasServices && (
+                        <span className={`rounded-full px-2 py-0.5 text-[10.5px] font-medium ${accent}`}>
+                          {label}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[12px] text-text-muted">{insight.timestamp}</span>
                   </div>
                   <p className="text-[13.5px] leading-relaxed text-text-secondary">{insight.body}</p>
