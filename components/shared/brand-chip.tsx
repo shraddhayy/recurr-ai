@@ -1,29 +1,26 @@
 import * as si from "simple-icons";
+
 import { cn } from "@/lib/utils";
 
+type SimpleIcon = {
+  hex: string;
+  path: string;
+};
+
 /**
- * Real brand marks, sourced from simple-icons (CC0 — public domain SVG data
- * of official brand marks, purpose-built for exactly this: showing
- * recognizable service logos in a product UI). Shared by the marketing site
- * and the dashboard so every subscription — hero, overview list,
- * subscriptions table, savings, AI insights — renders the same real mark.
+ * Real brand marks sourced from simple-icons.
  *
- * Matching is keyword-based rather than an exact-name lookup, because the
- * dashboard's mock data uses fuller names ("Spotify Family", "iCloud+ 2TB")
- * than the marketing copy does ("Spotify", "iCloud+"). Checked in order,
- * first match wins.
+ * Matching is keyword-based rather than an exact-name lookup because the
+ * dashboard mock data can use fuller names such as "Spotify Family" or
+ * "iCloud+ 2TB".
  *
- * Adobe and AWS previously fell back to monograms here on the assumption
- * they'd been excluded from simple-icons — that was wrong. Both are
- * confirmed present (siAdobecreativecloud, siAmazonaws), verified directly
- * against the published type definitions rather than assumed, so they're
- * real marks now. A few others genuinely aren't confirmable without a live
- * install (ChatGPT/OpenAI, Canva, Peloton, The New York Times, Disney+) and
- * still fall back to a plain monogram tinted with the brand's public color.
- * Real SVG marks where we can verify them, honest color-coded initials
- * where we can't — never a reconstructed logo.
+ * Icon names are resolved safely at runtime so this component remains
+ * compatible with different simple-icons package versions. If an icon is not
+ * available in the installed version, BrandChip falls back to a
+ * color-coded monogram instead of causing a TypeScript/build failure.
  */
-const iconRules: { test: RegExp; key: keyof typeof si }[] = [
+
+const iconRules: { test: RegExp; key: string }[] = [
   { test: /netflix/i, key: "siNetflix" },
   { test: /spotify/i, key: "siSpotify" },
   { test: /\bclaude\b/i, key: "siClaude" },
@@ -33,16 +30,27 @@ const iconRules: { test: RegExp; key: keyof typeof si }[] = [
   { test: /notion/i, key: "siNotion" },
   { test: /new york times|\bnyt\b/i, key: "siNewyorktimes" },
   { test: /peloton/i, key: "siPeloton" },
+
+  // These names vary between simple-icons versions.
+  // Runtime lookup prevents them from breaking the production build.
   { test: /adobe/i, key: "siAdobecreativecloud" },
-  { test: /\baws\b|amazon\s*web\s*services/i, key: "siAmazonaws" },
+  { test: /\baws\b|amazon\s+web\s+services/i, key: "siAmazonaws" },
 ];
 
 const monogramRules: { test: RegExp; color: string }[] = [
-  { test: /\bprime\b|^amazon(?!\s*web)/i, color: "#FF9900" },
+  { test: /\bprime\b|^amazon(?!\s+web)/i, color: "#FF9900" },
   { test: /chatgpt|openai/i, color: "#10A37F" },
   { test: /canva/i, color: "#8B3DFF" },
   { test: /disney\+?/i, color: "#113CCF" },
+  { test: /adobe/i, color: "#FF0000" },
+  { test: /\baws\b|amazon\s+web\s+services/i, color: "#232F3E" },
 ];
+
+function getSimpleIcon(key: string): SimpleIcon | undefined {
+  const icons = si as unknown as Record<string, SimpleIcon | undefined>;
+
+  return icons[key];
+}
 
 export function BrandChip({
   name,
@@ -56,9 +64,14 @@ export function BrandChip({
   className?: string;
 }) {
   const iconRule = iconRules.find((rule) => rule.test.test(name));
-  const icon = iconRule ? si[iconRule.key] : undefined;
+
+  const icon = iconRule ? getSimpleIcon(iconRule.key) : undefined;
+
   const iconSize = Math.round(size * 0.5);
-  const monogramColor = monogramRules.find((rule) => rule.test.test(name))?.color;
+
+  const monogramColor = monogramRules.find((rule) =>
+    rule.test.test(name)
+  )?.color;
 
   return (
     <span
@@ -67,7 +80,10 @@ export function BrandChip({
         shape === "circle" ? "rounded-full" : "rounded-xl",
         className
       )}
-      style={{ width: size, height: size }}
+      style={{
+        width: size,
+        height: size,
+      }}
     >
       {icon ? (
         <svg
@@ -97,9 +113,8 @@ export function BrandChip({
 }
 
 /**
- * A small overlapping stack of brand chips, for the handful of dashboard
- * moments (a bundle overlap, a week with several renewals) that reference
- * more than one service at once.
+ * A small overlapping stack of brand chips, useful for dashboard moments
+ * where multiple services are referenced together.
  */
 export function BrandChipStack({
   names,
@@ -113,6 +128,7 @@ export function BrandChipStack({
   className?: string;
 }) {
   const shown = names.slice(0, max);
+
   return (
     <span className={cn("flex shrink-0 items-center", className)}>
       {shown.map((name, i) => (
@@ -121,7 +137,10 @@ export function BrandChipStack({
           name={name}
           size={size}
           shape="circle"
-          className={cn("ring-2 ring-surface-card", i > 0 && "-ml-2.5")}
+          className={cn(
+            "ring-2 ring-surface-card",
+            i > 0 && "-ml-2.5"
+          )}
         />
       ))}
     </span>
