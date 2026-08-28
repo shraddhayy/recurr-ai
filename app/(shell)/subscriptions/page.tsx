@@ -11,9 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { EmptyState } from "@/components/patterns/empty-state";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BrandChip } from "@/components/shared/brand-chip";
 import { subscriptions } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
-import { BrandChip } from "@/components/shared/brand-chip";
 
 const statusVariant = {
   active: "active",

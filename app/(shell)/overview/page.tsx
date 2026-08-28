@@ -6,10 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { BrandChip } from "@/components/shared/brand-chip";
 import { subscriptions } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
 import { SpendTrendChart } from "@/components/patterns/spend-trend-chart";
-import { BrandChip } from "@/components/shared/brand-chip";
 
 const statusVariant = {
   active: "active",
