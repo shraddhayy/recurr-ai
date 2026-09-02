@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import { Wallet, Repeat2, CalendarClock, PiggyBank, ArrowRight, Sparkles } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/page-header";
@@ -17,7 +18,18 @@ const statusVariant = {
   renewing: "renewing",
 } as const;
 
-export default function OverviewPage() {
+function timeOfDayGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
+export default async function OverviewPage() {
+  const user = await currentUser();
+  const displayName =
+    (user?.unsafeMetadata?.displayName as string | undefined) || user?.firstName || "there";
+
   const upcoming = subscriptions
     .slice()
     .sort((a, b) => a.nextRenewal.localeCompare(b.nextRenewal))
@@ -27,7 +39,7 @@ export default function OverviewPage() {
     <div className="flex flex-col gap-8">
       <PageHeader
         eyebrow="Overview"
-        title="Good afternoon, Aarav"
+        title={`${timeOfDayGreeting()}, ${displayName}`}
         description="Here's how your recurring spend is trending this month."
         actions={
           <Button variant="outline" size="md">

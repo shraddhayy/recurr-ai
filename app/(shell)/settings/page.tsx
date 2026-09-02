@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { Camera, Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/page-header";
@@ -10,7 +11,8 @@ import { Input, FormField } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
@@ -24,6 +26,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { initials } from "@/lib/utils";
 
 const notificationPrefs = [
   { id: "renewals", label: "Upcoming renewals", description: "Get notified 3 days before a subscription renews" },
@@ -34,7 +37,18 @@ const notificationPrefs = [
 
 export default function SettingsPage() {
   const { toast } = useToast();
+  const { user, isLoaded } = useUser();
   const [saving, setSaving] = useState(false);
+  const [name, setName] = useState("");
+  const [nameInitialized, setNameInitialized] = useState(false);
+
+  // Adjust state during render (React-recommended pattern) instead of an
+  // effect: once the real user loads, seed the editable name field from it,
+  // exactly once, without an extra render-after-commit round trip.
+  if (user && !nameInitialized) {
+    setNameInitialized(true);
+    setName((user.unsafeMetadata?.displayName as string | undefined) || user.fullName || "");
+  }
   const [prefs, setPrefs] = useState<Record<string, boolean>>({
     renewals: true,
     savings: true,
@@ -42,12 +56,22 @@ export default function SettingsPage() {
     digest: false,
   });
 
-  function handleSave() {
+  const email = user?.primaryEmailAddress?.emailAddress ?? "";
+
+  async function handleSave() {
+    if (!user) return;
     setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      await user.update({
+        unsafeMetadata: { ...user.unsafeMetadata, displayName: name },
+      });
       toast({ title: "Settings saved", description: "Your preferences were updated.", variant: "success" });
-    }, 900);
+    } catch (err) {
+      console.error("Failed to save settings:", err);
+      toast({ title: "Couldn't save changes", description: "Please try again.", variant: "error" });
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -65,9 +89,14 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-6 pt-2">
           <div className="flex items-center gap-4">
-            <Avatar className="size-16">
-              <AvatarFallback className="text-[18px]">AK</AvatarFallback>
-            </Avatar>
+            {!isLoaded ? (
+              <Skeleton className="size-16 rounded-full" />
+            ) : (
+              <Avatar className="size-16">
+                {user?.imageUrl && <AvatarImage src={user.imageUrl} alt={name} />}
+                <AvatarFallback className="text-[18px]">{initials(name || "?")}</AvatarFallback>
+              </Avatar>
+            )}
             <Button variant="outline" size="sm">
               <Camera className="size-3.5" />
               Change photo
@@ -76,10 +105,10 @@ export default function SettingsPage() {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField label="Full name" htmlFor="name">
-              <Input id="name" defaultValue="Aarav Kapoor" />
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
             </FormField>
             <FormField label="Email address" htmlFor="email" helperText="Managed by your account provider">
-              <Input id="email" defaultValue="aarav@recurr.ai" disabled />
+              <Input id="email" value={email} disabled />
             </FormField>
             <FormField label="Currency" htmlFor="currency">
               <Select defaultValue="usd">
@@ -110,7 +139,13 @@ export default function SettingsPage() {
           </div>
         </CardContent>
         <CardFooter className="justify-end border-t border-divider pt-5">
-          <Button variant="ghost" size="md">
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={() =>
+              setName((user?.unsafeMetadata?.displayName as string | undefined) || user?.fullName || "")
+            }
+          >
             Cancel
           </Button>
           <Button size="md" loading={saving} onClick={handleSave}>

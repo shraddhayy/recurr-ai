@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Menu, Search, Bell, ChevronDown, LogOut, Settings as SettingsIcon, User } from "lucide-react";
+import { useUser, useClerk } from "@clerk/nextjs";
 
 import { useShellStore } from "@/lib/store/shell-store";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { initials } from "@/lib/utils";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +23,19 @@ export function Topbar() {
   const { setMobileNavOpen } = useShellStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
+
+  async function handleSignOut() {
+    try {
+      await signOut({ redirectUrl: "/" });
+    } catch (err) {
+      // Visible in the browser console if sign-out fails for any reason,
+      // instead of failing silently.
+      console.error("Sign out failed:", err);
+    }
+  }
+  const router = useRouter();
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -30,6 +47,13 @@ export function Topbar() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  const displayName =
+    (user?.unsafeMetadata?.displayName as string | undefined) ||
+    user?.fullName ||
+    user?.username ||
+    "Account";
+  const email = user?.primaryEmailAddress?.emailAddress ?? "";
 
   return (
     <>
@@ -88,41 +112,46 @@ export function Topbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-md py-1 pl-1 pr-1.5 transition-colors hover:bg-surface-muted sm:pr-2">
-                <Avatar className="size-8">
-                  <AvatarFallback>AK</AvatarFallback>
-                </Avatar>
-                <span className="hidden text-[13px] font-medium text-text-primary sm:block">
-                  Aarav Kapoor
-                </span>
-                <ChevronDown className="hidden size-3.5 text-text-muted sm:block" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="normal-case">
-                <span className="block text-[13px] font-medium text-text-primary">Aarav Kapoor</span>
-                <span className="block text-[12px] font-normal text-text-muted">
-                  aarav@recurr.ai
-                </span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="size-4" strokeWidth={1.75} />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <SettingsIcon className="size-4" strokeWidth={1.75} />
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem destructive>
-                <LogOut className="size-4" strokeWidth={1.75} />
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {!isLoaded ? (
+            <Skeleton className="h-9 w-9 rounded-md sm:w-32" />
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 rounded-md py-1 pl-1 pr-1.5 transition-colors hover:bg-surface-muted sm:pr-2">
+                  <Avatar className="size-8">
+                    {user?.imageUrl && <AvatarImage src={user.imageUrl} alt={displayName} />}
+                    <AvatarFallback>{initials(displayName)}</AvatarFallback>
+                  </Avatar>
+                  <span className="hidden text-[13px] font-medium text-text-primary sm:block">
+                    {displayName}
+                  </span>
+                  <ChevronDown className="hidden size-3.5 text-text-muted sm:block" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="normal-case">
+                  <span className="block text-[13px] font-medium text-text-primary">{displayName}</span>
+                  {email && (
+                    <span className="block text-[12px] font-normal text-text-muted">{email}</span>
+                  )}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => router.push("/settings")}>
+                  <User className="size-4" strokeWidth={1.75} />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => router.push("/settings")}>
+                  <SettingsIcon className="size-4" strokeWidth={1.75} />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem destructive onSelect={handleSignOut}>
+                  <LogOut className="size-4" strokeWidth={1.75} />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </header>
 
